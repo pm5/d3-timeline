@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>D3.js Timeline Layout Example</title>
+    <script src="//d3js.org/d3.v3.min.js"></script>
+    <script src="../d3-timeline.js"></script>
+    <style>
+      html, body {
+        margin: 0
+      }
+      #timeline {
+        width: 300px;
+        float: left;
+      }
+      #story {
+        position: fixed;
+        top: 50px;
+        left: 300px;
+        width: 300px;
+        min-height: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="timeline"></div>
+    <div id="story"></div>
+    <script>
+      function mandela (selection) {
+        var margin = { top: 30, right: 0, bottom: 30, left: 40 },
+          width = 200,
+          height = 800
+        var svg = selection.append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var timeScale = d3.time.scale()
+          .domain([new Date("1918/01/01"), new Date("2013/12/31")])
+          .range([0, height])
+        var timeline = d3.layout.timeline()
+          .scale(timeScale)
+          .datetime(function (d) { return new Date(d['Start Date']) })
+          .content(function (d) {
+            return '<h2>' + d.Headline + '</h2><em>' + d['Start Date'] + '</em><div>' + d.Text + '</div>'
+          })
+        var timeAxis = d3.svg.axis()
+          .scale(timeScale)
+          .ticks(d3.time.year, 10)
+
+        svg.append('g')
+          .attr('class', 'time axis')
+          .attr('transform', 'rotate(90)')
+          .call(timeAxis)
+
+        d3.csv('mandela.csv', function (data) {
+          var nodes = timeline.nodes(data)
+          svg.selectAll('g.event')
+            .data(nodes)
+          .enter().append('g')
+            .attr('class', 'event')
+            .attr('transform', function (d) {
+              return 'translate(30,' + d.x + ')'
+            })
+          .append('circle')
+            .attr('r', 5)
+            .on('mouseover', function (d) {
+              d3.select('#story')
+                .html(d.content)
+            })
+            .on('mouseout', function (d) {
+              d3.select('#story')
+                .html('')
+            })
+        })
+      }
+      d3.select("#timeline")
+        .call(mandela)
+    </script>
+  </body>
+</html>

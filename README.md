@@ -16,9 +16,9 @@ var events = [
 ]
 
 var timeline = d3.layout.timeline()
-  .size(["2013/12/01", "2014/06/01"])
-
+  .scale(d3.time.scale().domain(["2013/12/01", "2014/06/01"]))
+  .size([500, 100])
 var nodes = timeline.nodes(events, function (d) { return d.datetime })
-var links = timeline.links(nodes)
+var timeAxis = d3.axis.scale(timeline.scale())
 ```
 
