@@ -42,7 +42,7 @@
         .append("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
         var timeScale = d3.time.scale()
-          .domain([new Date("1915/01/01"), new Date("2015/12/31")])
+          .domain([new Date("100/01/01"), new Date("2200/01/01")])
           .range([0, width])
         var timeline = d3.layout.timeline()
           .scale(timeScale)
@@ -52,14 +52,14 @@
           })
         var timeAxis = d3.svg.axis()
           .scale(timeScale)
-          .ticks(d3.time.year, 10)
+          .ticks(d3.time.year, 200)
 
         svg.append('g')
           .attr('class', 'time axis')
           .attr('transform', 'translate(0,50)')
           .call(timeAxis)
 
-        d3.csv('mandela.csv', function (data) {
+        d3.csv('palestine.csv', function (data) {
           var nodes = timeline.nodes(data)
           svg.selectAll('g.event')
             .data(nodes)
