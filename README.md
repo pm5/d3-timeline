@@ -9,16 +9,17 @@ Usage
 d3.layout.timeline = require('d3-timeline')
 
 var events = [
-  { datetime: "2013/12/15", story: "" },
-  { datetime: "2014/01/03", story: "" },
-  { datetime: "2014/02/01", story: "" },
-  { datetime: "2014/02/27", story: "" },
+  { 'Start Date': '2013/12/15', 'Text': '' },
+  { 'Start Date': '2014/01/03', 'Text': '' },
+  { 'Start Date': '2014/02/01', 'Text': '' },
+  { 'Start Date': '2014/02/27', 'Text': '' },
 ]
 
+var timeScale = d3.time.scale().domain([new Date('2013/12/01'), new Date('2014/06/01')])
+var timeAxis = d3.axis.scale(timeScale)
 var timeline = d3.layout.timeline()
-  .scale(d3.time.scale().domain(["2013/12/01", "2014/06/01"]))
-  .size([500, 100])
-var nodes = timeline.nodes(events, function (d) { return d.datetime })
-var timeAxis = d3.axis.scale(timeline.scale())
-```
+  .scale(timeScale)
+  .datetime(function (d) { return d['Start Date'] })
 
+var nodes = timeline.nodes(events)
+```
