@@ -19,6 +19,19 @@
         width: 300px;
         min-height: 100px;
       }
+      .time.axis line,
+      .time.axis path {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+      .event circle {
+        fill: none;
+        stroke: #000;
+      }
+      .event:hover circle {
+        fill: #999;
+      }
     </style>
   </head>
   <body>
@@ -35,7 +48,7 @@
         .append("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
         var timeScale = d3.time.scale()
-          .domain([new Date("1918/01/01"), new Date("2013/12/31")])
+          .domain([new Date("1915/01/01"), new Date("2015/12/31")])
           .range([0, height])
         var timeline = d3.layout.timeline()
           .scale(timeScale)
