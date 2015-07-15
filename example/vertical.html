@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>D3.js Timeline Layout Example</title><script src="//d3js.org/d3.v3.min.js"></script>
+    <script src="../d3-timeline.js"></script>
+    <style>
+      html, body {
+        margin: 0;
+      }
+      #timeline {
+        width: 600px;
+      }
+      .event.content {
+        position: absolute;
+        width: 800px;
+        font-size: 16px;
+        line-height: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="timeline"></div>
+    <script>
+      (function () {
+        function palestine (selection) {
+          var width = 300
+          var eventHeight = 100
+          var margin = { top: 50, right: 0, bottom: 50, left: 30}
+          d3.csv('palestine.csv', function (data) {
+            var height = data.length * eventHeight
+            var svg = selection.append('svg')
+              .attr('width', width + margin.left + margin.right)
+              .attr('height', height + margin.top + margin.bottom)
+            .append('g')
+              .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+            var timeScale = d3.scale.linear()
+              .domain([-0.5, data.length - 1])
+              .range([0, height])
+            var timeAxis = svg.append('line')
+              .attr('class', 'timeline axis')
+              .attr('x1', 0)
+              .attr('y1', 0)
+              .attr('x2', 0)
+              .attr('y2', height + margin.bottom)
+              .attr('stroke-width', 2)
+              .attr('stroke', 'black')
+            var timeline = d3.layout.timeline()
+              .scale(timeScale)
+              .datetime(function (d) { return new Date(d['Start Date']) })
+              .index(function (d, i) { return +i })
+              .content(function (d) {
+                return '<em>' + d['Start Date'] + '</em>' + '<div>' + d.Headline + '</div>' + (d.Text ? '<p>' + d.Text + '</p>' : '')
+              })
+            var nodes = timeline.nodes(data)
+            var node = svg.selectAll('.event.dot')
+              .data(nodes)
+            .enter().append('g')
+              .attr('class', 'event dot')
+              .attr('transform', function (d) { return 'translate(0,' + (d.x + 10) + ')' }) // line-height: 10px;
+            node.append('circle')
+              .attr('r', 5)
+              .attr('fill', 'black')
+            node.each(function (d, i) {
+              selection.append('div')
+                .attr('class', 'event content')
+                .attr('style', 'top: ' + (margin.top + d.x) + 'px; left: ' + (margin.left + 20) + 'px;')
+                .html(d.content)
+            })
+          })
+        }
+        d3.select('#timeline')
+          .call(palestine)
+      })()
+    </script>
+  </body>
+</html>

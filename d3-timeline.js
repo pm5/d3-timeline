@@ -3,17 +3,22 @@
     var setting = {}
 
     function timeline (data) {
-      return data.map(function (d) {
+      if (! setting.index) {
+        setting.index = setting.datetime
+      }
+      return data.sort(function (a, b) {
+        return setting.datetime(a) - setting.datetime(b)
+      }).map(function () {
         return {
-          "x": setting.scale(setting.datetime(d)),
-          "content": setting.content(d)
+          "x": setting.scale(setting.index.apply(null, arguments)),
+          "content": setting.content.apply(null, arguments)
         }
       })
     }
 
     timeline.nodes = timeline
 
-    ;['datetime', 'scale', 'content'].forEach(function (n) {
+    ;['datetime', 'index', 'scale', 'content'].forEach(function (n) {
       setting[n] = null
       timeline[n] = function () {
         if (arguments.length === 0) {
